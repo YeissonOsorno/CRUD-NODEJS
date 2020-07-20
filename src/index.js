@@ -16,7 +16,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 
 /* Routes */
-app.use(require('./routes/index'));
+//app.use(require('./routes/index'));
 app.use('/api',require('./routes/task.routes'));
 
 /* Static Files */
