@@ -5,23 +5,23 @@ const db = mongojs('db-tasks', ['tasks']);
 router.get('/task', (req, res, next) => {
     db.tasks.find((error, tasks) => {
         if (error) return next(error);
-        res.status(202).send({ tasks: tasks })
+        res.json(tasks);
     })
 });
 
 router.get('/task/:id', (req, res, next) => {
     db.tasks.findOne({_id:mongojs.ObjectId(req.params.id)},(error, task) => {
         if (error) return next(error);
-        res.status(202).send({ tasks: task })
+        res.status(202).send(task )
     })
 });
 
-router.post('/task', (req, res, next) => {
-    const body = req.params;
+router.post('/task', async(req, res, next) => {
+    const body = req.body;
     if (!body.title || !(body.isDone + '')) res.status(400).send({ error: 'Bad Data' });
-    db.tasks.save((error, tasks) => {
+    await db.tasks.save(body,(error, task) => {
         if (error) return next(error);
-        res.status(202).send(tasks)
+        res.status(202).send(task)
     });
 });
 
@@ -34,17 +34,24 @@ router.delete('/task/:id', (req, res, next) => {
 
 router.put('/task/:id', (req, res, next) => {
     const task = req.body;
-    const updateTask = {};
+    let updateTask = {};
     
-    if (body.isDone) updateTask.isDone = task.isDone;
-    if (body.title) updateTask.title = task.title;
-    
-    if(!updateTask) return res.send.status(400).send({error:'Bad Request'})
-    
-    db.tasks.update({_id:mongojs.ObjectId(req.params.id)},(error,task)=>{
-        if (error) return next(error);
-        res.send(202).send(task);
-    })
+    if(task.isDone) {
+        updateTask.isDone = task.isDone;
+    }
+    if(task.title) {
+        updateTask.title = task.title;
+    }
+    if(!updateTask) {
+        res.status(400);
+        res.json({'error': 'bad request'});
+    } else {
+        db.tasks.update({_id: mongojs.ObjectId(req.params.id)}, updateTask, {}, (err, task) => {
+            if (err) return next(err);
+            res.json(task);
+        });
+    }
 });
+
 
 module.exports = router;

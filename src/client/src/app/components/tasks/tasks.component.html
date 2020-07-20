@@ -1,0 +1,57 @@
+<div class="container">
+    <!-- Image and text -->
+    <nav class="navbar navbar-light bg-light">
+        <a class="navbar-brand" href="#">
+            <img src="/docs/4.0.0/assets/brand/bootstrap-solid.svg" width="30" height="30"
+                class="d-inline-block align-top" alt="" loading="lazy">
+            Task
+        </a>
+    </nav>
+    <div class="row">
+        <div class="col-md-6">
+            <img src="/assets/man.png" alt="Mancito programando">
+        </div>
+        <div class="col-md-6">
+            <div class="card">
+                <div class="card-body">
+                    <form (submit)="addTask($event)">
+                        <div class="input-group">
+                            <input type="text" name="title"  [(ngModel)]="title" placeholder="Add Task" class="form-control">
+                            <span class="input-group-addon">
+                                <button type="submit" class="btn btn-primary">
+                                    Add Task
+                                </button>
+                                
+                            </span>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+    </div>
+    <div class="row">
+        <table class="table text-center table-hover">
+            <thead>
+              <tr>
+                <th>Status</th>
+                <th>Title</th>
+                <th>Operations</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let task of tasks">
+                <td>
+                  <input type="checkbox" [checked]="task.isDone" (click)="updateStatus(task)">
+                </td>
+                <td>{{ task.title }}</td>
+                <td>
+                  <button class="btn btn-danger" (click)="deleteTask(task._id)">
+                    <i class="fa fa-trash"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+    </div>
+</div>
